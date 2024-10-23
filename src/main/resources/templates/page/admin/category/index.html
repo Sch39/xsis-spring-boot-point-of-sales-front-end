@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layouts/AdminLayout}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Produk Manajemen - Categori</title>
+</head>
+
+<body>
+  <th:block layout:fragment="plugin">
+    <th:block th:replace="~{admin/category/SaveForm}"></th:block>
+    <th:block th:replace="~{fragments/DeleteConfirmation}"></th:block>
+    <script src="/js/admin/category.js"></script>
+  </th:block>
+  <div layout:fragment="content" class="mb-5">
+    <div class="d-flex justify-content-between mb-3" data-bs-theme="light">
+      <button type="button" class="btn btn-dark-blue content text-white" id="createCategory">Buat Data Baru</button>
+
+      <form method="get" class="d-flex align-items-center">
+        <th:block th:if="${param.filter != null}">
+          <!-- Checkbox 'deleted' -->
+          <div class="form-check me-2">
+            <input class="form-check-input" type="checkbox" id="includeDeleted" name="filter" value="deleted"
+              th:checked="${param.filter.contains('deleted')}" />
+            <label class="form-check-label" for="includeDeleted">
+              Tampilkan data dihapus
+            </label>
+          </div>
+          <!-- Checkbox 'not-deleted' -->
+          <div class="form-check me-2">
+            <input class="form-check-input" type="checkbox" id="includeNotDeleted" name="filter" value="not-deleted"
+              th:checked="${param.filter.contains('not-deleted')}" />
+            <label class="form-check-label" for="includeNotDeleted">
+              Tampilkan data tidak terhapus
+            </label>
+          </div>
+        </th:block>
+
+        <!-- Menampilkan checkbox ketika tidak ada query filter -->
+        <th:block th:unless="${param.filter != null}">
+          <div class="form-check me-2">
+            <input class="form-check-input" type="checkbox" id="includeDeleted" name="filter" value="deleted" checked />
+            <label class="form-check-label" for="includeDeleted">
+              Tampilkan data dihapus
+            </label>
+          </div>
+          <div class="form-check me-2">
+            <input class="form-check-input" type="checkbox" id="includeNotDeleted" name="filter" value="not-deleted"
+              checked />
+            <label class="form-check-label" for="includeNotDeleted">
+              Tampilkan data tidak terhapus
+            </label>
+          </div>
+        </th:block>
+
+        <button type="submit" class="btn btn-dark-blue content text-white">Filter</button>
+      </form>
+    </div>
+
+
+    <!-- Tabel Data -->
+    <table class="table mb-3 table-striped table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Slug</th>
+          <th scope="col">Name</th>
+          <th scope="col">Is Deleted</th>
+          <th scope="col">Action</th> <!-- Tambahkan kolom Action -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:if="${categories.size()==0}">
+          <th colspan="4" class="text-center">Data Tidak ditemukan</th>
+        </tr>
+        <tr th:if="${categories.size()>0}" th:each="category : ${categories}">
+          <th th:text="${category.slug}"></th>
+          <td th:text="${category.name}"></td>
+          <td><input disabled type="checkbox" th:checked="${category.isDeleted}"></td>
+          <td>
+            <!-- Tombol Edit dan Hapus -->
+            <button type="button" class="btn btn-sm btn-warning" th:attr="data-id=${category.id},
+            data-name=${category.name},
+            data-description=${category.description},
+            data-slug=${category.slug},
+            data-deleted=${category.isDeleted}" onclick="editForm(this)"><i
+                class="material-icons fs-5">edit</i></button>
+            <button type="button" class="btn btn-sm btn-danger" th:attr="data-id=${category.id},
+            data-name=${category.name},
+            data-slug=${category.slug},
+            data-deleted=${category.isDeleted}" onclick="deleteData(this)"><i
+                class="material-icons fs-5">delete</i></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+
+</html>
