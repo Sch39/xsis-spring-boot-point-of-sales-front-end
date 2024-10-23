@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title layout:title-pattern="$CONTENT_TITLE">Admin</title>
+  <link rel="shortcut icon" href="/img/logo/favicon.ico" type="image/x-icon">
+  <!-- FONT -->
+  <link rel="stylesheet" type="text/css"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+  <!-- Nucleo Icons -->
+  <link href="/css/icons/nucleo-icons.css" rel="stylesheet" />
+  <link href="/css/icons/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <link rel="stylesheet" href="/css/lib/bootstrap.min.css">
+  <link id="pagestyle" href="/css/material-dashboard.css?v=3.1.0" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css">
+
+  <script src="/js/lib/jquery.min.js"></script>
+</head>
+
+<body class="bg-gray-200 g-sidenav-show" id="sidenavShow">
+  <aside th:replace="~{fragments/SideNavbar}"></aside>
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+    <nav
+      th:replace="~{fragments/Navbar::navbar(breadcrumbTitle='Kategori', breadcrumbPath='Admin/Produk Manajemen/Kategori')}">
+    </nav>
+    <div class="container-fluid py-4">
+      <th:block layout:fragment="content"></th:block>
+      <th:block th:replace="~{fragments/Footer}">
+        </th:replace>
+    </div>
+  </main>
+
+  <th:block th:replace="~{fragments/LayoutSetting}"></th:block>
+
+  <th:block layout:fragment="plugin"></th:block>
+
+  <script src="/js/plugins/perfect-scrollbar.min.js"></script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+  <script src="/js/lib/bootstrap.bundle.min.js"></script>
+  <script src="/js/lib/material-dashboard.js?v=3.1.0"></script>
+</body>
+
+</html>

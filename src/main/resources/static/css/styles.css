@@ -1,0 +1,11 @@
+.cs-bg-transparent {
+  background-color: rgba(199, 199, 199, 0.2);
+}
+
+.modal {
+  z-index: 1050;
+}
+
+.sidenav {
+  z-index: 1000 !important;
+}

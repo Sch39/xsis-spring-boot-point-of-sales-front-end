@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title layout:title-pattern="$CONTENT_TITLE"></title>
+  <link rel="shortcut icon" href="/img/logo/favicon.ico" type="image/x-icon">
+
+  <!-- Google Web Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+  <!-- Libraries Stylesheet -->
+  <link href="/js/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+  <!-- Customized Bootstrap Stylesheet -->
+  <link href="/css/user/style.css" rel="stylesheet">
+  <script src="/js/lib/jquery.min.js"></script>
+
+</head>
+
+<body>
+  <th:block th:replace="~{fragments/user/TopBar}"></th:block>
+  <th:block th:replace="~{fragments/user/Navbar}"></th:block>
+  <div class="container-fluid pt-5">
+    <th:block layout:fragment="content"></th:block>
+  </div>
+  <th:block th:replace="~{fragments/user/Footer}"></th:block>
+
+  <!-- Back to Top -->
+  <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+  <!-- js -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/lib/easing/easing.min.js"></script>
+  <script src="/js/lib/owlcarousel/owl.carousel.min.js"></script>
+
+
+  <script src="/js/user/index.js"></script>
+</body>
+
+</html>
