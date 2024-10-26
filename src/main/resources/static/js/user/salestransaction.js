@@ -47,7 +47,12 @@ function renderSearchResult(containerId, dataObj){
 
 $(document).on('submit', '#searchForm', function (e) { 
   e.preventDefault();
-  
+  let searchText = $('#searchInput').val();
+  let sortBy = $('#sortBy').val();
+  let sortDirection = $('#sortDirection').val();
+  let itemPerPage = $('#itemPerPage').val();
+
+  loadSearchResult(0, itemPerPage, sortBy, sortDirection, searchText);
 });
 
 $('#addProductModalButton').click(function (e) { 
@@ -59,7 +64,7 @@ $('#addProductModalButton').click(function (e) {
         <div class="col-12 text-start">
           <form id="searchForm">
             <div class="input-group">
-              <input id="searchInput" type="text" class="form-control" placeholder="Search by variant/product/category">
+              <input id="searchInput" type="text" class="form-control" placeholder="Search by variant">
               <button id="searchButton" class="btn btn-outline-primary ml-2" type="submit">
                 <i class="fa fa-search"></i>
               </button>
@@ -71,8 +76,7 @@ $('#addProductModalButton').click(function (e) {
                 <select id="sortBy" class="form-select">
                   <option value="name">Name</option>
                   <option value="price">Price</option>
-                  <option value="date">Date Added</option>
-                  <!-- Tambahkan opsi lain sesuai kebutuhan -->
+                  <option value="createdAt">Date Added</option>
                 </select>
               </div>
               
@@ -82,6 +86,10 @@ $('#addProductModalButton').click(function (e) {
                   <option value="asc">Ascending</option>
                   <option value="desc">Descending</option>
                 </select>
+              </div>
+              <div class="col-auto">
+                <label for="itemPerPage" class="mr-2">Item Perhalaman:</label>
+                <input type="number" id="itemPerPage" class="form-control">
               </div>
             </div>
           </form>
@@ -94,7 +102,7 @@ $('#addProductModalButton').click(function (e) {
   $('#modalBodyId').append(`
      <div id='searchNav' class='row align-items-center justify-content-center mb-5'>
       <nav aria-label="" class='col-12'>
-        <ul class="pagination justify-content-center">
+        <ul id="paginationContainer" class="pagination justify-content-center">
           <li class="page-item">
             <a class="page-link" href="#" aria-label="Previous">
               <span aria-hidden="true">&laquo;</span>
@@ -116,8 +124,6 @@ $('#addProductModalButton').click(function (e) {
 
     `);
     
-
-    // Clear previous results
     $('#searchResult').html(`
       <div class="table-responsive">
         <table class="table table-striped table-bordered">
@@ -135,27 +141,62 @@ $('#addProductModalButton').click(function (e) {
         </table>
       </div>
       `);
-
-      $.ajax({
-        url: 'http://localhost:9001/api/variants/search',
-        type: 'GET',
-        dataType: 'json',
-        success: function(response) {
-          console.log('reponse');
-          
-            // Pastikan permintaan sukses
-            if (response.success) {
-                const products = response.data.content;
-                
-                renderSearchResult('productTableBody', products);
-            } else {
-                alert("Gagal mengambil data: " + response.message);
-            }
-        },
-        error: function(error) {
-            console.error("Error:", error);
-        }
-    });
+    loadSearchResult();
 
   $('#modalId').modal('show');
+});
+
+function loadSearchResult(pageNumber=0, itemPerPage=5, sortBy='name', sortDirection='asc', searchText=null){
+  $.ajax({
+    type: "GET",
+    url: "http://localhost:9001/api/variants/search",
+    data: {
+      page: pageNumber,
+      sortBy,
+      sortDirection,
+      variantName: searchText,
+      // productName: searchText,
+      // categoryName: searchText,
+      size:itemPerPage
+    },
+    dataType: "json",
+    success: function (response) {
+      if (response.success) {
+        console.log('success');
+        
+        const data = response.data.content;
+        renderSearchResult('productTableBody', data);
+        updatePagination(response.data.page);
+      } else {
+        alert("Gagal memuat data!");
+      }
+    },
+    error: function (e) {
+      console.log("message: "+e);
+      
+      alert("Terjadi kesalahan!");
+    }
+  });
+}
+
+function updatePagination (pageInfo) { 
+  $('#paginationContainer').html('');
+  for (let i = 0; i < pageInfo.total_pages; i++) {
+    $('#paginationContainer').append(`
+      <li class="page-item">
+            <button class="page-link  ${i === pageInfo.number ? 'active' : ''}" data-page="${i}">
+              ${i===0 ? '<span aria-hidden="true">&laquo;</span>':
+                i===(pageInfo.total_pages-1)? '<span aria-hidden="true">&raquo;</span>':
+                '<span>'+(i+1)+'</span>'
+              }
+            </button>
+      </li>
+      `);
+    
+  }
+ }
+
+ $(document).on('click', '.page-link', function () {
+  const page = $(this).data('page');
+  loadSearchResult(page);
 });
