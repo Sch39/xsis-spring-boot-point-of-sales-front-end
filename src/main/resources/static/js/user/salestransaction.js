@@ -13,6 +13,39 @@ $('.quantity button').on('click', function () {
   button.parent().parent().find('input').val(newVal);
 });
 
+function renderLoadingPlaceholder(containerId) {
+  $('#' + containerId).html(`
+    <tr class="placeholder-glow">
+      <td><span class="placeholder col-1"></span></td>
+      <td><span class="placeholder col-4"></span></td>
+      <td><span class="placeholder col-6"></span></td>
+      <td><span class="placeholder col-2"></span></td>
+      <td><span class="placeholder col-1"></span></td>
+    </tr>
+    <tr class="placeholder-glow">
+      <td><span class="placeholder col-1"></span></td>
+      <td><span class="placeholder col-4"></span></td>
+      <td><span class="placeholder col-6"></span></td>
+      <td><span class="placeholder col-2"></span></td>
+      <td><span class="placeholder col-1"></span></td>
+    </tr>
+    <tr class="placeholder-glow">
+      <td><span class="placeholder col-1"></span></td>
+      <td><span class="placeholder col-4"></span></td>
+      <td><span class="placeholder col-6"></span></td>
+      <td><span class="placeholder col-2"></span></td>
+      <td><span class="placeholder col-1"></span></td>
+    </tr>
+    <tr class="placeholder-glow">
+      <td><span class="placeholder col-1"></span></td>
+      <td><span class="placeholder col-4"></span></td>
+      <td><span class="placeholder col-6"></span></td>
+      <td><span class="placeholder col-2"></span></td>
+      <td><span class="placeholder col-1"></span></td>
+    </tr>
+  `);
+}
+
 function truncateDescription(description, limit = 10) {
   const words = description.split(" ");
   return words.length > limit ? words.slice(0, limit).join(" ") + "..." : description;
@@ -50,7 +83,7 @@ $(document).on('submit', '#searchForm', function (e) {
   let searchText = $('#searchInput').val();
   let sortBy = $('#sortBy').val();
   let sortDirection = $('#sortDirection').val();
-  let itemPerPage = $('#itemPerPage').val();
+  let itemPerPage = $('#itemPerPage').val()=="" ? 5: $('#itemPerPage').val();
 
   loadSearchResult(0, itemPerPage, sortBy, sortDirection, searchText);
 });
@@ -103,21 +136,6 @@ $('#addProductModalButton').click(function (e) {
      <div id='searchNav' class='row align-items-center justify-content-center mb-5'>
       <nav aria-label="" class='col-12'>
         <ul id="paginationContainer" class="pagination justify-content-center">
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item active" aria-current="page">
-            <span class="page-link">2</span>
-          </li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
         </ul>
       </nav>
     </div>
@@ -147,6 +165,8 @@ $('#addProductModalButton').click(function (e) {
 });
 
 function loadSearchResult(pageNumber=0, itemPerPage=5, sortBy='name', sortDirection='asc', searchText=null){
+  renderLoadingPlaceholder('productTableBody');
+
   $.ajax({
     type: "GET",
     url: "http://localhost:9001/api/variants/search",
@@ -165,8 +185,10 @@ function loadSearchResult(pageNumber=0, itemPerPage=5, sortBy='name', sortDirect
         console.log('success');
         
         const data = response.data.content;
-        renderSearchResult('productTableBody', data);
-        updatePagination(response.data.page);
+        setTimeout(()=>{
+          renderSearchResult('productTableBody', data);
+          updatePagination(response.data.page);
+        }, 1500)
       } else {
         alert("Gagal memuat data!");
       }
