@@ -1,0 +1,14 @@
+<div th:fragment="modal" class="modal fade" th:attr="id=${modalId}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog" th:classappend="${class}">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" th:attr="id=${titleId}">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div th:attr="id=${bodyId}" class="modal-body">
+      </div>
+      <div th:if="${footerId!=null}" th:attr="id=${footerId}" class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
