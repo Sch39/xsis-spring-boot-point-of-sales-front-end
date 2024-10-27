@@ -189,7 +189,7 @@ function loadSearchResult(pageNumber=0, itemPerPage=5, sortBy='name', sortDirect
 
   $.ajax({
     type: "GET",
-    url: "http://localhost:9001/api/variants/search",
+    url: BASE_URL+"/api/variants/search",
     data: {
       page: pageNumber,
       sortBy,
@@ -463,12 +463,56 @@ $(document).on('click', '#payButton', function () {
     $('#payButton').prop('disabled', true);
     $('#payButton').find('i').removeClass('d-none');
 
-    setTimeout(()=>{
+    let orders = [];
+    let products = JSON.parse(localStorage.getItem(SELECTED_PRODUCTS_STORAGE_NAME))||[];
+
+    if (products.length==0) {
       $('#paymentReferenceInputContainer').html(paymentReferenceHtmlInput);
-      $('#paymentReference').val('sby-g7ttds-uug');
       $('#payButton').find('i').addClass('d-none');
-      $('#payMoney').prop('disabled', true);
-      $('#paymentModalTitleId').text('Pembayaran: Lancar boss q!');
+      alert('Tidak ada product yang dipilih');
+      return;
+    }
+
+    products.forEach(product => {
+      orders.push({
+        variant_id: product.id,
+        quantity: product.quantity,
+      });
+    });
+   
+    const data = {
+      pay_money: $('#payMoney').val(),
+      orders,
+    };
+    
+    const dataJson = JSON.stringify(data);
+    
+    // setTimeout(()=>{
+    //   $('#paymentReferenceInputContainer').html(paymentReferenceHtmlInput);
+    //   $('#payButton').find('i').addClass('d-none');
+    //   $('#paymentReference').val('sby-g7ttds-uug');
+    //   $('#payMoney').prop('disabled', true);
+    //   $('#paymentModalTitleId').text('Pembayaran: Lancar boss q!');
       
-    }, 2500);
+    // }, 2500);
+
+    $.ajax({
+      type: "POST",
+      url: BASE_URL+"/api/orders",
+      data: dataJson,
+      contentType: 'application/json',
+      success: function (response) {
+          setTimeout(()=>{
+          $('#paymentReferenceInputContainer').html(paymentReferenceHtmlInput);
+          $('#payButton').find('i').addClass('d-none');
+          $('#paymentReference').val(response.data.reference);
+          $('#payMoney').prop('disabled', true);
+          $('#paymentModalTitleId').text('Pembayaran: Lancar boss q!');
+          
+        }, 1000);
+      },
+      error(){
+        alert("Gagal melakukan transaksi!");
+      }
+    });
 });
