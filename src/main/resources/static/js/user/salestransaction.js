@@ -368,3 +368,105 @@ $('#resetProductCart').click(function (e) {
   renderProductCart();
   renderCartSummary();
 });
+
+// payment
+const paymentReferenceHtmlInput = '<input type="text" id="paymentReference" class="form-control" disabled>';
+
+$('#paymentModalButton').click(function (e) { 
+  e.preventDefault();
+  $('#paymentModalTitleId').text('Pembayaran');
+  $('#paymentModalBodyId').html(`
+    <form>
+      <div class="row g-3 align-items-center">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-4">
+                  <label for="paymentReference" class="col-form-label">Reference</label>
+                </div>
+                <div class="col" id="paymentReferenceInputContainer">
+                  
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="row">
+                <div class="col-4">
+                  <label for="paymentTotal" class="col-form-label">Total Tagihan</label>
+                </div>
+                <div class="col">
+                  <input disabled data-type="currency" type="text" id="paymentTotal" class="form-control" >
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="row">
+                <div class="col-4">
+                  <label for="payMoney" class="col-form-label">Uang Dibayarkan</label>
+                </div>
+                <div class="col">
+                  <input placeholder="Masukan jumlah uang dibayarkan" data-type="currency" type="text" id="payMoney" class="form-control" >
+                  <span class="text-danger error d-none">Uang kurang njirr!!</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="row">
+                <div class="col-4">
+                  <label for="paymentChange" class="col-form-label">Kembalian</label>
+                </div>
+                <div class="col">
+                  <input disabled data-type="currency" type="text" id="paymentChange" class="form-control" >
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 mt-3 text-end">
+          <button type="button" id="cancelButton" class="btn btn-secondary me-2" data-bs-dismiss="modal" aria-label="Close">Batal</button>
+          <button disabled type="button" id="payButton" class="btn btn-primary">Bayar <i class="fas fa-spinner fa-spin d-none"></i></button>
+        </div>
+      </div>
+    </form>
+    `);
+    $('#paymentReferenceInputContainer').html(paymentReferenceHtmlInput);
+    $('#paymentTotal').val(totalPrice);
+    $('#paymentModalId').modal('show');
+});
+
+$(document).on('input', 'input[data-type="currency"]', function () {
+  const input = $(this);
+  input.val(input.val().replace(/[^0-9.]/g, ""));
+});
+
+$(document).on('change', '#payMoney', function () {
+  const input = $(this);
+  let change = parseFloat(input.val())-totalPrice;
+  $('#paymentChange').val(change.toFixed(2));
+  let errorSpan = input.parent().find('.error');
+  if (change<0) {
+    errorSpan.removeClass('d-none');
+    $('#payButton').prop('disabled', true);
+  }else{
+    errorSpan.addClass('d-none');
+    $('#payButton').removeAttr('disabled');
+  }
+});
+
+$(document).on('click', '#payButton', function () {
+  $('#paymentReferenceInputContainer').html(`
+    <div class="placeholder-glow">
+            <span class="placeholder col form-control-placeholder"></span>
+    </div>
+    `);
+
+    $('#payButton').prop('disabled', true);
+    $('#payButton').find('i').removeClass('d-none');
+
+    setTimeout(()=>{
+      $('#paymentReferenceInputContainer').html(paymentReferenceHtmlInput);
+      $('#paymentReference').val('sby-g7ttds-uug');
+      $('#payButton').find('i').addClass('d-none');
+      $('#payMoney').prop('disabled', true);
+      $('#paymentModalTitleId').text('Pembayaran: Lancar boss q!');
+      
+    }, 2500);
+});

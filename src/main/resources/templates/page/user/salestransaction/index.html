@@ -12,6 +12,9 @@
     <th:block
       th:replace="~{fragments/BaseModal::modal(modalId='modalId', titleId='modalTitleId', bodyId='modalBodyId', class='modal-dialog-centered modal-fullscreen-lg-down modal-xl')}">
     </th:block>
+    <th:block
+      th:replace="~{fragments/BaseModal::modal(modalId='paymentModalId', titleId='paymentModalTitleId', bodyId='paymentModalBodyId', class='modal-dialog-centered modal-xl')}">
+    </th:block>
     <script src="/js/user/salestransaction.js"></script>
   </th:block>
   <div layout:fragment="content" class="container-fluid pt-5">
@@ -33,68 +36,6 @@
             </tr>
           </thead>
           <tbody class="align-middle" id="selectedProductContainer">
-            <!-- <tr>
-              <td class="align-middle"><img src="https://picsum.photos/id/1/200/200" alt="" style="width: 50px;">
-                Colorful
-                Stylish Shirt
-              </td>
-              <td class="align-middle">$150</td>
-              <td class="align-middle">
-                <div class="input-group quantity mx-auto" style="width: 100px;">
-                  <button class="btn btn-sm btn-primary btn-minus">
-                    <i class="fa fa-minus"></i>
-                  </button>
-                  <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                  <button class="btn btn-sm btn-primary btn-plus">
-                    <i class="fa fa-plus"></i>
-                  </button>
-                </div>
-              </td>
-              <td class="align-middle">$150</td>
-              <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-            </tr>
-            <tr>
-              <td class="align-middle"><img src="https://picsum.photos/id/2/200/200" alt="" style="width: 50px;">
-                Colorful
-                Stylish Shirt
-              </td>
-              <td class="align-middle">$150</td>
-              <td class="align-middle">
-                <div class="input-group quantity mx-auto" style="width: 100px;">
-                  <button class="btn btn-sm btn-primary btn-minus">
-                    <i class="fa fa-minus"></i>
-                  </button>
-                  <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                  <button class="btn btn-sm btn-primary btn-plus">
-                    <i class="fa fa-plus"></i>
-                  </button>
-                </div>
-              </td>
-              <td class="align-middle">$150</td>
-              <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-            </tr>
-            <tr>
-              <td class="align-middle"><img src="https://picsum.photos/id/4/200/200" alt="" style="width: 50px;">
-                Colorful
-                Stylish Shirt
-              </td>
-              <td class="align-middle">$150</td>
-              <td class="align-middle">
-                <div class="input-group quantity mx-auto" style="width: 100px;">
-                  <button class="btn btn-sm btn-primary btn-minus">
-                    <i class="fa fa-minus"></i>
-                  </button>
-                  <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                  <button class="btn btn-sm btn-primary btn-plus">
-                    <i class="fa fa-plus"></i>
-                  </button>
-                </div>
-              </td>
-              <td class="align-middle">$150</td>
-              <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-            </tr> -->
-
-            </tr>
           </tbody>
         </table>
       </div>
@@ -124,7 +65,7 @@
               <h5 class="fw-bold">Total</h5>
               <h5 class="fw-bold" id="cartTotalPrice">Rp 0</h5>
             </div>
-            <button class="btn btn-primary w-100 my-3 py-3">Proceed To Checkout</button>
+            <button id="paymentModalButton" class="btn btn-primary w-100 my-3 py-3 text-white">Pembayaran</button>
           </div>
         </div>
       </div>
