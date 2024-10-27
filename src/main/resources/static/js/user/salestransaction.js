@@ -361,3 +361,10 @@ function renderCartSummary(){
   $('#cartTotalPrice').text(`Rp ${totalPrice}, 00`);
   $('#cartSubtotalPrice').text(`Rp ${totalPrice}, 00`);
 }
+
+$('#resetProductCart').click(function (e) { 
+  e.preventDefault();
+  localStorage.setItem(SELECTED_PRODUCTS_STORAGE_NAME, "[]");
+  renderProductCart();
+  renderCartSummary();
+});
