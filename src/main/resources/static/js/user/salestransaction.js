@@ -321,6 +321,8 @@ $('#selectedProductContainer').on('change', '.quantity-input', function(e) {
   const currentProduct = products.find(product=>product.id == productId);
   if (currentVal>currentProduct.stock) {
     input.val(currentProduct.stock);
+  }else if(currentVal<=0){
+    input.val(1);
   }
   input.parent().parent().parent().find('.total-price').text(currentProduct.price * input.val());
 
