@@ -1,5 +1,6 @@
 const SELECTED_PRODUCTS_STORAGE_NAME='productsStorage';
 let productsStorage = [];
+let totalPrice = 0;
 
 $(document).on('click', '.quantity button', function () {
   const products = JSON.parse(localStorage.getItem(SELECTED_PRODUCTS_STORAGE_NAME)) ||[];
@@ -264,6 +265,7 @@ function updatePagination (pageInfo) {
 
   renderSearchResult('productTableBody', productsStorage);
   renderProductCart();
+  renderCartSummary();
 });
 
 function renderProductCart(){
@@ -295,9 +297,9 @@ function renderProductCart(){
                     </button>
                   </div>
                 </td>
-                <td class="align-middle total-price">${product.price*product.quantity}</td>
-                <td class="align-middle"><button data-id="${product.id}" class="btn btn-sm btn-primary removeProduct"><i class="fa fa-times"></i></button></td>
-              </tr>
+                <td class="align-middle total-price">${(product.price*product.quantity).toFixed(2)}</td>
+                <td class="align-middle"><button class="btn btn-sm btn-primary removeProduct"><i class="fa fa-times"></i></button></td>
+          </tr>
         `);
     });
   }
@@ -305,6 +307,7 @@ function renderProductCart(){
 
 window.onload=()=>{
   renderProductCart();
+  renderCartSummary();
 }
 
 $('#selectedProductContainer').on('change', '.quantity-input', function(e) {
@@ -322,13 +325,39 @@ $('#selectedProductContainer').on('change', '.quantity-input', function(e) {
   input.parent().parent().parent().find('.total-price').text(currentProduct.price * input.val());
 
     if (currentProduct.quantity !== input.val()) {
-  const updatedProducts = products.map(product=>{
-      if(product.id == productId){
-        return {...product, ...{ quantity: input.val()}};
-      }
-      return product;
-    });
+      const updatedProducts = products.map(product=>{
+          if(product.id == productId){
+            return {...product, ...{ quantity: input.val()}};
+          }
+          return product;
+        });
 
-    localStorage.setItem(SELECTED_PRODUCTS_STORAGE_NAME, JSON.stringify(updatedProducts));
-  }
+        localStorage.setItem(SELECTED_PRODUCTS_STORAGE_NAME, JSON.stringify(updatedProducts));
+        renderCartSummary();
+      }
 });
+
+$('#selectedProductContainer').on('click', '.removeProduct',function (e) { 
+  e.preventDefault();
+  const button = $(this);
+  const productId = button.parent().parent().data('id');
+  let products = JSON.parse(localStorage.getItem(SELECTED_PRODUCTS_STORAGE_NAME))||[];
+  
+  const updatedProducts = products.filter(product => product.id != productId);
+
+  localStorage.setItem(SELECTED_PRODUCTS_STORAGE_NAME, JSON.stringify(updatedProducts));
+  renderProductCart();
+  renderCartSummary();
+});
+
+function renderCartSummary(){
+  let products = JSON.parse(localStorage.getItem(SELECTED_PRODUCTS_STORAGE_NAME))||[];
+  totalPrice = 0;
+  products.forEach(product => {
+    totalPrice += (product.quantity*product.price);
+  });
+
+  totalPrice = totalPrice.toFixed(2);
+  $('#cartTotalPrice').text(`Rp ${totalPrice}, 00`);
+  $('#cartSubtotalPrice').text(`Rp ${totalPrice}, 00`);
+}
