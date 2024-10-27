@@ -80,3 +80,10 @@ $('.related-carousel').owlCarousel({
 });
 
 
+function renderCarIconNumber () { 
+    let products = JSON.parse(localStorage.getItem(SELECTED_PRODUCTS_STORAGE_NAME)) || [];
+
+    $('#cartIconBadgeNumber').text(products.length);
+ }
+ 
+ renderCarIconNumber();

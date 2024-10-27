@@ -27,9 +27,11 @@
         </button>
         <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
           <div class="navbar-nav me-auto py-0">
-            <a href="/" class="nav-item nav-link">Dashboard</a>
-            <a href="/sales-transaction" class="nav-item nav-link">Transaksi Penjualan</a>
-            <a href="/transaction-history" class="nav-item nav-link">Riwayat Transaksi</a>
+            <a th:classappend="${normalizedUrl.equals('')?'active':''}" href="/" class="nav-item nav-link">Dashboard</a>
+            <a th:classappend="${normalizedUrl.equals('/sales-transaction')?'active':''}" href="/sales-transaction"
+              class="nav-item nav-link">Transaksi Penjualan</a>
+            <a th:classappend="${normalizedUrl.equals('/transaction-history')?'active':''}" href="/transaction-history"
+              class="nav-item nav-link">Riwayat Transaksi</a>
           </div>
           <!-- <div class="navbar-nav ms-auto py-0">
             <a href="" class="nav-item nav-link">Login</a>

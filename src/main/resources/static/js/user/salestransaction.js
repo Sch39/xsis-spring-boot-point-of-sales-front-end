@@ -1,4 +1,3 @@
-const SELECTED_PRODUCTS_STORAGE_NAME='productsStorage';
 let productsStorage = [];
 let totalPrice = 0;
 
@@ -266,6 +265,7 @@ function updatePagination (pageInfo) {
   renderSearchResult('productTableBody', productsStorage);
   renderProductCart();
   renderCartSummary();
+  renderCarIconNumber();
 });
 
 function renderProductCart(){
@@ -324,7 +324,7 @@ $('#selectedProductContainer').on('change', '.quantity-input', function(e) {
   }else if(currentVal<=0){
     input.val(1);
   }
-  input.parent().parent().parent().find('.total-price').text(currentProduct.price * input.val());
+  input.parent().parent().parent().find('.total-price').text((currentProduct.price * input.val()).toFixed(2));
 
     if (currentProduct.quantity !== input.val()) {
       const updatedProducts = products.map(product=>{
@@ -350,6 +350,7 @@ $('#selectedProductContainer').on('click', '.removeProduct',function (e) {
   localStorage.setItem(SELECTED_PRODUCTS_STORAGE_NAME, JSON.stringify(updatedProducts));
   renderProductCart();
   renderCartSummary();
+  renderCarIconNumber();
 });
 
 function renderCartSummary(){
@@ -369,6 +370,8 @@ $('#resetProductCart').click(function (e) {
   localStorage.setItem(SELECTED_PRODUCTS_STORAGE_NAME, "[]");
   renderProductCart();
   renderCartSummary();
+  renderCarIconNumber();
+
 });
 
 // payment
