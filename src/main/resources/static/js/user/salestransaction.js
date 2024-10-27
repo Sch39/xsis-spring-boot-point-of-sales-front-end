@@ -2,18 +2,26 @@ const SELECTED_PRODUCTS_STORAGE_NAME='productsStorage';
 let productsStorage = [];
 
 $(document).on('click', '.quantity button', function () {
+  const products = JSON.parse(localStorage.getItem(SELECTED_PRODUCTS_STORAGE_NAME)) ||[];
   var button = $(this);
   var oldValue = button.parent().parent().find('input').val();
+  let productId = button.parent().parent().parent().data('id');
+  
+  const currentProduct = products.find(product=>product.id == productId);
   if (button.hasClass('btn-plus')) {
-      var newVal = parseFloat(oldValue) + 1;
+    var newVal = parseFloat(oldValue) + 1;
+      if (newVal > currentProduct.stock) {
+        return;
+      }
   } else {
-      if (oldValue > 0) {
+      if (oldValue > 1) {
           var newVal = parseFloat(oldValue) - 1;
       } else {
-          newVal = 0;
+          newVal = 1;
       }
   }
   button.parent().parent().find('input').val(newVal);
+  button.parent().parent().find('input').trigger('change');
 });
 
 function renderLoadingPlaceholder(containerId) {
@@ -249,15 +257,16 @@ function updatePagination (pageInfo) {
       name: selectedProduct.name,
       price: selectedProduct.price,
       quantity: 1,
+      stock: selectedProduct.stock,
     });
   }
   localStorage.setItem(SELECTED_PRODUCTS_STORAGE_NAME, JSON.stringify(products));
 
   renderSearchResult('productTableBody', productsStorage);
-  updateCartDisplay();
+  renderProductCart();
 });
 
-function updateCartDisplay(){
+function renderProductCart(){
   const products = JSON.parse(localStorage.getItem(SELECTED_PRODUCTS_STORAGE_NAME)) ||[];
 
   $('#selectedProductContainer').html('');
@@ -270,7 +279,7 @@ function updateCartDisplay(){
   }else{
     products.forEach(product => {
       $('#selectedProductContainer').append(`
-          <tr>
+          <tr data-id="${product.id}">
                 <td class="align-middle"><img src="https://picsum.photos/id/${product.item}/200/200" alt="" style="width: 50px;">
                   ${product.name}
                 </td>
@@ -280,13 +289,13 @@ function updateCartDisplay(){
                     <button class="btn btn-sm btn-primary btn-minus">
                       <i class="fa fa-minus"></i>
                     </button>
-                    <input type="text" class="form-control form-control-sm bg-secondary text-center" value="${product.quantity}">
+                    <input type="text" class="form-control form-control-sm bg-secondary text-center quantity-input" value="${product.quantity}">
                     <button class="btn btn-sm btn-primary btn-plus">
                       <i class="fa fa-plus"></i>
                     </button>
                   </div>
                 </td>
-                <td class="align-middle">${product.price*product.quantity}</td>
+                <td class="align-middle total-price">${product.price*product.quantity}</td>
                 <td class="align-middle"><button data-id="${product.id}" class="btn btn-sm btn-primary removeProduct"><i class="fa fa-times"></i></button></td>
               </tr>
         `);
@@ -295,5 +304,31 @@ function updateCartDisplay(){
 }
 
 window.onload=()=>{
-  updateCartDisplay();
+  renderProductCart();
 }
+
+$('#selectedProductContainer').on('change', '.quantity-input', function(e) {
+  e.preventDefault();
+  const input = $(this)
+  let currentVal = input.val();
+  const products = JSON.parse(localStorage.getItem(SELECTED_PRODUCTS_STORAGE_NAME)) ||[];
+
+  let productId = input.parent().parent().parent().data('id');
+  
+  const currentProduct = products.find(product=>product.id == productId);
+  if (currentVal>currentProduct.stock) {
+    input.val(currentProduct.stock);
+  }
+  input.parent().parent().parent().find('.total-price').text(currentProduct.price * input.val());
+
+    if (currentProduct.quantity !== input.val()) {
+  const updatedProducts = products.map(product=>{
+      if(product.id == productId){
+        return {...product, ...{ quantity: input.val()}};
+      }
+      return product;
+    });
+
+    localStorage.setItem(SELECTED_PRODUCTS_STORAGE_NAME, JSON.stringify(updatedProducts));
+  }
+});
